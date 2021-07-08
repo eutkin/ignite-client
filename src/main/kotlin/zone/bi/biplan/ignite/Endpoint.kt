@@ -1,11 +1,13 @@
 package zone.bi.biplan.ignite
 
 import io.micronaut.context.annotation.Value
+import io.micronaut.http.annotation.Body
 import io.micronaut.http.annotation.Controller
 import io.micronaut.http.annotation.Post
 import org.apache.ignite.Ignite
 import org.apache.ignite.cache.CacheEntryProcessor
 import org.slf4j.LoggerFactory
+import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import reactor.core.publisher.MonoSink
 import reactor.core.scheduler.Schedulers
@@ -20,7 +22,7 @@ import javax.inject.Named
 class Endpoint(
     private val ignite: Ignite,
     @Named("ignite") private val threadPool: ExecutorService,
-    @Value("\${list-size}") private val  size : Int
+    @Value("\${list-size}") private val size: Int
 ) {
 
     private val randomizer = ThreadLocalRandom.current()
@@ -30,9 +32,8 @@ class Endpoint(
     }
 
     @Post
-    fun run(body: Mono<String>): Mono<Void> {
-        return body
-            .flatMapIterable { (0 until 80).toList() }
+    fun run(@Body body: String): Mono<Void> {
+        return Flux.fromIterable((0 until 80).toList())
             .flatMap {
                 val cache = this.ignite.cache<String, List<Map<String, Any>>>("biplanCacheTestCache")
                 Mono.create { sink: MonoSink<Void> ->
