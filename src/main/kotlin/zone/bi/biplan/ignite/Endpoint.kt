@@ -35,7 +35,7 @@ class Endpoint(
     fun run(@Body body: String): Mono<Void> {
         return Flux.fromIterable((0 until 80).toList())
             .flatMap {
-                val cache = this.ignite.cache<String, List<Map<String, Any>>>("biplanCacheTestCache")
+                val cache = this.ignite.getOrCreateCache<String, List<Map<String, Any>>>("biplanCacheTestCache")
                 Mono.create { sink: MonoSink<Void> ->
                     cache.invokeAsync(
                         "consumer-${randomizer.nextInt(0, 10000)}",
