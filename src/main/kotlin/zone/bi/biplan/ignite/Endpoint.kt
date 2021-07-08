@@ -1,5 +1,6 @@
 package zone.bi.biplan.ignite
 
+import io.micronaut.context.annotation.Value
 import io.micronaut.http.annotation.Controller
 import io.micronaut.http.annotation.Post
 import org.apache.ignite.Ignite
@@ -19,6 +20,7 @@ import javax.inject.Named
 class Endpoint(
     private val ignite: Ignite,
     @Named("ignite") private val threadPool: ExecutorService,
+    @Value("\${list-size}") private val  size : Int
 ) {
 
     private val randomizer = ThreadLocalRandom.current()
@@ -37,7 +39,7 @@ class Endpoint(
                     cache.invokeAsync(
                         "consumer-${randomizer.nextInt(0, 10000)}",
                         CacheEntryProcessor<String, List<Map<String, Any>>, Void> { entry, _ ->
-                            entry.value = (0 until 1000).map {
+                            entry.value = (0 until size).map {
                                 mapOf(
                                     "id" to UUID.randomUUID().toString(),
                                     "timestamp" to OffsetDateTime.now(),

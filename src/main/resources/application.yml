@@ -51,3 +51,4 @@ tracing:
     sender:
       agent-host: ${JAEGER_HOST:jaeger-agent}
       agent-port: ${JAEGER_PORT:6831}
+list-size : ${LIST_SIZE:1000}
