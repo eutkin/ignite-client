@@ -41,7 +41,7 @@ class Endpoint(
                         "consumer-${randomizer.nextInt(0, 10000)}",
                         CacheEntryProcessor<String, List<Map<String, Any>>, Void> { entry, arg ->
                             val count = arg[0] as Int
-                            entry.value = (0 until size).map {
+                            entry.value = (0 until count).map {
                                 mapOf(
                                     "id" to UUID.randomUUID().toString(),
                                     "timestamp" to OffsetDateTime.now(),
