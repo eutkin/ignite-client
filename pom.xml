@@ -32,10 +32,10 @@
   </repositories>
 
   <dependencies>
+
     <dependency>
-      <groupId>org.apache.ignite</groupId>
-      <artifactId>ignite-core</artifactId>
-      <version>${ignite.version}</version>
+      <groupId>io.micronaut.ignite</groupId>
+      <artifactId>micronaut-ignite-core</artifactId>
     </dependency>
     <dependency>
       <groupId>io.micronaut.reactor</groupId>
