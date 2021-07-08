@@ -30,7 +30,7 @@ class Endpoint(
     }
 
     @Post
-    fun run(body: Mono<Any>): Mono<Void> {
+    fun run(body: Mono<String>): Mono<Void> {
         return body
             .flatMapIterable { (0 until 80).toList() }
             .flatMap {
