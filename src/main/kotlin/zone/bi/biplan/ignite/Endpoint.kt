@@ -39,7 +39,8 @@ class Endpoint(
                 Mono.create { sink: MonoSink<Void> ->
                     cache.invokeAsync(
                         "consumer-${randomizer.nextInt(0, 10000)}",
-                        CacheEntryProcessor<String, List<Map<String, Any>>, Void> { entry, _ ->
+                        CacheEntryProcessor<String, List<Map<String, Any>>, Void> { entry, arg ->
+                            val count = arg[0] as Int
                             entry.value = (0 until size).map {
                                 mapOf(
                                     "id" to UUID.randomUUID().toString(),
@@ -49,7 +50,7 @@ class Endpoint(
                             }
                                 .toMutableList()
                             null
-                        })
+                        }, this.size)
                         .listenAsync({ future ->
                             try {
                                 future.get(200).let { sink.success() }
