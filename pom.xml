@@ -29,13 +29,17 @@
       <id>central</id>
       <url>https://repo.maven.apache.org/maven2</url>
     </repository>
+    <repository>
+      <id>jcenter.bintray.com</id>
+      <url>https://jcenter.bintray.com</url>
+    </repository>
   </repositories>
 
   <dependencies>
+
     <dependency>
-      <groupId>org.apache.ignite</groupId>
-      <artifactId>ignite-core</artifactId>
-      <version>${ignite.version}</version>
+      <groupId>io.micronaut.ignite</groupId>
+      <artifactId>micronaut-ignite-core</artifactId>
     </dependency>
     <dependency>
       <groupId>io.micronaut.reactor</groupId>
