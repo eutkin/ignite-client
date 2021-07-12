@@ -278,28 +278,4 @@
             </plugin>
         </plugins>
     </build>
-    <profiles>
-        <profile>
-            <id>ci</id>
-            <activation>
-                <property>
-                    <name>env.VERSION</name>
-                </property>
-            </activation>
-            <properties>
-                <projectVersion>${env.VERSION}</projectVersion>
-            </properties>
-        </profile>
-        <profile>
-            <id>local</id>
-            <activation>
-                <property>
-                    <name>!env.VERSION</name>
-                </property>
-            </activation>
-            <properties>
-                <projectVersion>0.0.0-SNAPSHOT</projectVersion>
-            </properties>
-        </profile>
-    </profiles>
 </project>
