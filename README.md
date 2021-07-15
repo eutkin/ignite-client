@@ -1,12 +1,5 @@
-## Micronaut 2.5.7 Documentation
+## Медленная вставка списков в Apache Ignite
 
-- [User Guide](https://docs.micronaut.io/2.5.7/guide/index.html)
-- [API Reference](https://docs.micronaut.io/2.5.7/api/index.html)
-- [Configuration Reference](https://docs.micronaut.io/2.5.7/guide/configurationreference.html)
-- [Micronaut Guides](https://guides.micronaut.io/index.html)
----
+Проект представляет собой веб сервис, который на каждый запрос вставляет в кэш Apache Ignite список из 1000 элементов.
 
-## Feature http-client documentation
-
-- [Micronaut HTTP Client documentation](https://docs.micronaut.io/latest/guide/index.html#httpClient)
-
+При вставке списков длиной в 50 элементов и 1000 пропускная способность сервиса отличается на порядок
