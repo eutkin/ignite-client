@@ -36,6 +36,7 @@ class Endpoint(
         return Flux.fromIterable((0 until 80).toList())
             .flatMap {
                 val cache = this.ignite.getOrCreateCache<String, List<Map<String, Any>>>("biplanCacheTestCache")
+                val start = System.currentTimeMillis()
                 Mono.create { sink: MonoSink<Void> ->
                     cache.invokeAsync(
                         "consumer-${randomizer.nextInt(0, 10000)}",
@@ -54,7 +55,9 @@ class Endpoint(
                         .listenAsync({ future ->
                             try {
                                 future.get(200).let { sink.success() }
+                                log.info("Insert list(size = $size) for ${System.currentTimeMillis() - start} ms")
                             } catch (ex: Throwable) {
+                                log.error("Insert list(size = $size) for ${System.currentTimeMillis() - start} ms")
                                 sink.error(ex)
                             }
                         }, this.threadPool)
