@@ -43,15 +43,18 @@ class Endpoint(
                         CacheEntryProcessor<String, List<Map<String, Any>>, Void> { entry, arg ->
                             val count = arg[0] as Int
                             entry.value = (0 until count).map {
-                                mapOf(
-                                    "id" to UUID.randomUUID().toString(),
-                                    "timestamp" to OffsetDateTime.now(),
-                                    "amount" to BigDecimal.valueOf(10000)
+                                HashMap(
+                                    mapOf(
+                                        "id" to UUID.randomUUID().toString(),
+                                        "timestamp" to OffsetDateTime.now(),
+                                        "amount" to BigDecimal.valueOf(10000)
+                                    )
                                 )
                             }
                                 .toMutableList()
                             null
-                        }, this.size)
+                        }, this.size
+                    )
                         .listenAsync({ future ->
                             try {
                                 future.get(200).let { sink.success() }
