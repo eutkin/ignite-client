@@ -13,7 +13,7 @@ if [ -f "$K8S_CA_CERT" ]; then
     fi
     if command -v keytool &> /dev/null
     then
-        keytool -storepass changeit -noprompt -trustcacerts -importcert \
+        keytool -storepass changeit -noprompt -trustcacerts -importcert -cacerts \
         -alias cacertk8s -file $K8S_CA_CERT
         echo "Kubernetes CA certificate was aded to the JAVA trust store"
     fi

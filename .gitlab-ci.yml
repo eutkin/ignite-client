@@ -4,5 +4,5 @@ variables:
 
 include:
   - project: biplan/ci_common
-    ref: feature/java8
+    ref: master
     file: all-in-one.gitlab-ci.yml
