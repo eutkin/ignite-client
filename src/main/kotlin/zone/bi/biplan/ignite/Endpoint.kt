@@ -1,7 +1,6 @@
 package zone.bi.biplan.ignite
 
 import io.micronaut.context.annotation.Value
-import io.micronaut.http.annotation.Body
 import io.micronaut.http.annotation.Controller
 import io.micronaut.http.annotation.Post
 import org.apache.ignite.Ignite
@@ -16,6 +15,7 @@ import java.time.OffsetDateTime
 import java.util.*
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.ThreadLocalRandom
+import javax.annotation.PreDestroy
 import javax.inject.Named
 
 @Controller
@@ -32,7 +32,7 @@ class Endpoint(
     }
 
     @Post
-    fun run(@Body body: String): Mono<Void> {
+    fun run(): Mono<Void> {
         return Flux.fromIterable((0 until 80).toList())
             .flatMap {
                 val cache = this.ignite.getOrCreateCache<String, List<Map<String, Any>>>("biplanCacheTestCache")
@@ -72,5 +72,10 @@ class Endpoint(
             }
             .collectList()
             .then()
+    }
+
+    @PreDestroy
+    fun destroy() {
+        this.ignite.destroyCache("biplanCacheTestCache")
     }
 }

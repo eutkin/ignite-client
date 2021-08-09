@@ -1,12 +1,12 @@
-## Micronaut 2.5.7 Documentation
+## Apache Ignite Client Example
 
-- [User Guide](https://docs.micronaut.io/2.5.7/guide/index.html)
-- [API Reference](https://docs.micronaut.io/2.5.7/api/index.html)
-- [Configuration Reference](https://docs.micronaut.io/2.5.7/guide/configurationreference.html)
-- [Micronaut Guides](https://guides.micronaut.io/index.html)
----
+Сервис для проверки вставки списков заданной длины в Apache Ignite.
 
-## Feature http-client documentation
+Для вставки случайного списка необходимо послать POST запрос на root.
 
-- [Micronaut HTTP Client documentation](https://docs.micronaut.io/latest/guide/index.html#httpClient)
+Скорость вставки пишется в лог.
 
+## Конфигурация
+
+Конфигурация аналогична другим сервисам, использующим Apache Ignite. Размер списка задается через переменную окружения
+LIST_SIZE, которая по умолчанию равна 1000.
