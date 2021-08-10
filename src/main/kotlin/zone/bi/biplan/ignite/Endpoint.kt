@@ -11,10 +11,12 @@ import reactor.core.publisher.Mono
 import reactor.core.publisher.MonoSink
 import reactor.core.scheduler.Schedulers
 import java.math.BigDecimal
+import java.time.Duration
 import java.time.OffsetDateTime
 import java.util.*
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.ThreadLocalRandom
+import java.util.concurrent.atomic.AtomicLong
 import javax.inject.Named
 
 @Controller
@@ -26,19 +28,22 @@ class Endpoint(
 
     private val randomizer = ThreadLocalRandom.current()
 
+    private val counter = AtomicLong()
+
     companion object {
         private val log = LoggerFactory.getLogger(Endpoint::class.java)
     }
 
     @Post
     fun run(): Mono<Void> {
+        val cache = this.ignite.getOrCreateCache<String, List<Map<String, Any>>>("biplanCacheTestCache")
         return Flux.fromIterable((0 until 80).toList())
+            .delayElements(Duration.ofMillis(100), Schedulers.single())
             .flatMap {
-                val cache = this.ignite.getOrCreateCache<String, List<Map<String, Any>>>("biplanCacheTestCache")
                 val start = System.currentTimeMillis()
                 Mono.create { sink: MonoSink<Void> ->
                     cache.invokeAsync(
-                        "consumer-${randomizer.nextInt(0, 10000)}",
+                        "consumer-${counter.getAndIncrement()}",
                         CacheEntryProcessor<String, List<Map<String, Any>>, Void> { entry, arg ->
                             val count = arg[0] as Int
                             entry.value = (0 until count).map {
@@ -66,11 +71,30 @@ class Endpoint(
                 }
                     .subscribeOn(Schedulers.fromExecutor(threadPool))
             }
+            .flatMap {
+                val start = System.currentTimeMillis()
+                Mono.create { sink: MonoSink<List<Map<String, Any>>> ->
+                    cache.getAsync("consumer-${counter.getAndDecrement()}")
+                        .listenAsync({ future ->
+                            try {
+                                future.get(200).let { sink.success() }
+                                log.info("Read list(size = $size) for ${System.currentTimeMillis() - start} ms")
+                            } catch (ex: Throwable) {
+                                log.error("Read list(size = $size) for ${System.currentTimeMillis() - start} ms")
+                                sink.error(ex)
+                            }
+                        }, this.threadPool)
+                }
+                    .subscribeOn(Schedulers.fromExecutor(threadPool))
+            }
             .onErrorContinue { ex, obj: Any? ->
                 log.error(obj.toString(), ex)
             }
             .collectList()
             .then()
-            .doOnTerminate { this.ignite.destroyCache("biplanCacheTestCache") }
+            .doOnTerminate {
+                this.ignite.destroyCache("biplanCacheTestCache")
+                log.info("Destroy cache")
+            }
     }
 }
