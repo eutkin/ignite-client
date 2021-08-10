@@ -15,7 +15,6 @@ import java.time.OffsetDateTime
 import java.util.*
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.ThreadLocalRandom
-import javax.annotation.PreDestroy
 import javax.inject.Named
 
 @Controller
@@ -72,10 +71,6 @@ class Endpoint(
             }
             .collectList()
             .then()
-    }
-
-    @PreDestroy
-    fun destroy() {
-        this.ignite.destroyCache("biplanCacheTestCache")
+            .doOnTerminate { this.ignite.destroyCache("biplanCacheTestCache") }
     }
 }

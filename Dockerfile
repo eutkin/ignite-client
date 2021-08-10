@@ -1,4 +1,4 @@
-FROM adoptopenjdk:8-jre-hotspot
+FROM adoptopenjdk:11-jre-hotspot
 
 ENV USER_JAVA_OPTS ""
 
