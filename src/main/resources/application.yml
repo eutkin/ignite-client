@@ -17,6 +17,8 @@ micronaut:
         descriptions: true
         step: PT1M
     enabled: true
+  server:
+    port: ${PORT:8090}
 endpoints:
   prometheus:
     sensitive: false
@@ -52,3 +54,4 @@ tracing:
       agent-host: ${JAEGER_HOST:jaeger-agent}
       agent-port: ${JAEGER_PORT:6831}
 list-size : ${LIST_SIZE:1000}
+pause : ${PAUSE:0}

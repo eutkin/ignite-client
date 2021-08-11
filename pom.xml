@@ -18,7 +18,7 @@
         <exec.mainClass>zone.bi.biplan.ignite.ApplicationKt</exec.mainClass>
         <kotlinVersion>1.4.32</kotlinVersion>
         <micronaut.runtime>netty</micronaut.runtime>
-        <ignite.version>2.9.1</ignite.version>
+        <ignite.version>2.12.0-SNAPSHOT</ignite.version>
     </properties>
     <profiles>
         <profile>
@@ -63,11 +63,7 @@
             <groupId>io.micronaut.reactor</groupId>
             <artifactId>micronaut-reactor</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.apache.ignite</groupId>
-            <artifactId>ignite-kubernetes</artifactId>
-            <version>${ignite.version}</version>
-        </dependency>
+
         <dependency>
             <groupId>io.micronaut</groupId>
             <artifactId>micronaut-inject</artifactId>

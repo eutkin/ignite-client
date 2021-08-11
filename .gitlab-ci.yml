@@ -1,8 +1,0 @@
----
-variables:
-  CI_PROJECT_TYPE: service
-
-include:
-  - project: biplan/ci_common
-    ref: master
-    file: all-in-one.gitlab-ci.yml

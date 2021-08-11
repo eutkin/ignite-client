@@ -10,8 +10,6 @@ ENV JAVA_OPTS -XX:+UnlockExperimentalVMOptions \
 WORKDIR /application
 
 COPY target/ignite-client-*.jar /application/ignite-client.jar
-COPY entrypoint.sh /entrypoint.sh
-ENTRYPOINT [ "/entrypoint.sh" ]
 CMD java $JAVA_OPTS $USER_JAVA_OPTS -jar ignite-client.jar
 
 EXPOSE 8080

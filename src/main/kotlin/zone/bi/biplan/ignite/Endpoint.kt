@@ -23,7 +23,8 @@ import javax.inject.Named
 class Endpoint(
     private val ignite: Ignite,
     @Named("ignite") private val threadPool: ExecutorService,
-    @Value("\${list-size}") private val size: Int
+    @Value("\${list-size}") private val size: Int,
+    @Value("\${pause}") private val pause : Long
 ) {
 
     private val randomizer = ThreadLocalRandom.current()
@@ -34,30 +35,29 @@ class Endpoint(
         private val log = LoggerFactory.getLogger(Endpoint::class.java)
     }
 
+    private val cacheEntryProcessor = CacheEntryProcessor<String, List<Map<String, Any>>, Void> { entry, arg ->
+        val count = arg[0] as Int
+        entry.value = (0 until count).map {
+            mapOf(
+                "id" to UUID.randomUUID().toString(),
+                "timestamp" to OffsetDateTime.now(),
+                "amount" to BigDecimal.valueOf(10000)
+            )
+        }.toMutableList()
+        null
+    }
+
     @Post
     fun run(): Mono<Void> {
         val cache = this.ignite.getOrCreateCache<String, List<Map<String, Any>>>("biplanCacheTestCache")
         return Flux.fromIterable((0 until 80).toList())
-            .delayElements(Duration.ofMillis(100), Schedulers.single())
+            .delayElements(Duration.ofMillis(pause), Schedulers.single())
             .flatMap {
                 val start = System.currentTimeMillis()
                 Mono.create { sink: MonoSink<Void> ->
                     cache.invokeAsync(
                         "consumer-${counter.getAndIncrement()}",
-                        CacheEntryProcessor<String, List<Map<String, Any>>, Void> { entry, arg ->
-                            val count = arg[0] as Int
-                            entry.value = (0 until count).map {
-                                HashMap(
-                                    mapOf(
-                                        "id" to UUID.randomUUID().toString(),
-                                        "timestamp" to OffsetDateTime.now(),
-                                        "amount" to BigDecimal.valueOf(10000)
-                                    )
-                                )
-                            }
-                                .toMutableList()
-                            null
-                        }, this.size
+                        cacheEntryProcessor, this.size
                     )
                         .listenAsync({ future ->
                             try {
