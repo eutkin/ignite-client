@@ -71,22 +71,6 @@ class Endpoint(
                 }
                     .subscribeOn(Schedulers.fromExecutor(threadPool))
             }
-            .flatMap {
-                val start = System.currentTimeMillis()
-                Mono.create { sink: MonoSink<List<Map<String, Any>>> ->
-                    cache.getAsync("consumer-${counter.getAndDecrement()}")
-                        .listenAsync({ future ->
-                            try {
-                                future.get(200).let { sink.success() }
-                                log.info("Read list(size = $size) for ${System.currentTimeMillis() - start} ms")
-                            } catch (ex: Throwable) {
-                                log.error("Read list(size = $size) for ${System.currentTimeMillis() - start} ms")
-                                sink.error(ex)
-                            }
-                        }, this.threadPool)
-                }
-                    .subscribeOn(Schedulers.fromExecutor(threadPool))
-            }
             .onErrorContinue { ex, obj: Any? ->
                 log.error(obj.toString(), ex)
             }
