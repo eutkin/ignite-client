@@ -1,30 +1,8 @@
 micronaut:
   application:
     name: ignite-client
-  netty:
-    event-loops:
-      default:
-        prefer-native-transport: true
-        num-threads: ${NETTY_WORKER_THREADS_COUNT:10}
-  executors:
-    ignite:
-      type: FIXED
-      number-of-threads: ${THREAD_POOL_IGNITE_SIZE:10}
-  metrics:
-    export:
-      prometheus:
-        enabled: true
-        descriptions: true
-        step: PT1M
-    enabled: true
   server:
     port: ${PORT:8090}
-endpoints:
-  prometheus:
-    sensitive: false
-  health:
-    enabled: true
-    sensitive: false
 
 ignite:
   enabled: true
@@ -45,13 +23,6 @@ ignite:
   deployment-mode: shared
 jackson:
   default-typing: java_lang_object
-tracing:
-  jaeger:
-    enabled: ${JAEGER_ENABLED:true}
-    sampler:
-      probability: ${JAEGER_PROBABILITY:1}
-    sender:
-      agent-host: ${JAEGER_HOST:jaeger-agent}
-      agent-port: ${JAEGER_PORT:6831}
-list-size : ${LIST_SIZE:1000}
-pause : ${PAUSE:0}
+
+deleted:
+  caches: ${CACHE_FOR_REMOVE}
